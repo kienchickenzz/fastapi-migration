@@ -12,6 +12,7 @@ from src.base.config import Config
 from src.base.database.model.base import Base
 from src.user.database.model.user.main import User
 
+
 from os import environ
 from dotenv import load_dotenv
 env_path = project_root / '.env'
