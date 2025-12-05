@@ -1,0 +1,17 @@
+[project]
+name = "etl-2"
+version = "0.1.0"
+description = ""
+requires-python = ">=3.10,<4.0"
+
+dependencies = [
+    "alembic>=1.17.2",
+    "psycopg2-binary>=2.9.11",
+    "python-dotenv>=1.2.1",
+    "sqlalchemy[asyncio]>=2.0.44",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pipdeptree==2.26.1",
+]
