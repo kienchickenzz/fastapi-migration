@@ -18,7 +18,7 @@ from src.base.config import Config
 
 
 from src.base.database.model.base import Base
-from src.product.database.model.product import Product
+from src.user.database.model.user import User
 
 
 # ----------
