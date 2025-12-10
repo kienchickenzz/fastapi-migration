@@ -4,8 +4,6 @@ services:
         container_name: postgres_db
         image: postgres:15
         restart: no
-        env_file:
-        - ./.env
         networks:
         - server
         environment:
@@ -15,6 +13,7 @@ services:
         ports:
             - "5432:5432"
         volumes:
+            - ./postgres_bootstrap:/docker-entrypoint-initdb.d
             - ./volumes/postgres:/var/lib/postgresql/data
         healthcheck:
             test: [ "CMD", "pg_isready", "-U", "postgres" ] 

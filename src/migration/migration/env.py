@@ -1,3 +1,7 @@
+# ----------
+# Add project root to sys.path
+# ----------
+
 import sys
 from pathlib import Path
 
@@ -6,17 +10,46 @@ project_root = current_dir.parent.parent.parent # Thư mục gốc của project
 sys.path.insert(0, str(project_root))
 
 
+# ----------
+# Import Entities
+# ----------
+
 from src.base.config import Config
 
 
 from src.base.database.model.base import Base
-from src.user.database.model.user.main import User
+from src.product.database.model.product import Product
 
+
+# ----------
+# Load Environment Variables
+# ----------
 
 from os import environ
 from dotenv import load_dotenv
-env_path = project_root / '.env'
+current_dir = Path(__file__)
+env_path = current_dir.parent / '.env'
 load_dotenv(env_path)
+
+
+# ----------
+# Utils
+# ----------
+
+def get_database_url() -> str:
+    conf = Config(environ)
+    db_prefix = "DB"
+    db_host = conf.require_config(f"{db_prefix}_HOST")
+    db_port = conf.require_config(f"{db_prefix}_PORT")
+    db_database = conf.require_config(f"{db_prefix}_NAME")
+    db_user = conf.require_config(f"{db_prefix}_USER")
+    db_password = conf.require_config(f"{db_prefix}_PASSWORD")
+    return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_database}"  # if working with local POSTGRES container then perhaps removing '?sslmode=require' is needed
+
+
+# ----------
+# Alembic Migration Environment
+# ----------
 
 from logging.config import fileConfig
 
@@ -24,7 +57,6 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -46,21 +78,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-
-def get_database_url() -> str:
-    conf = Config(environ)
-    db_prefix = "DB"
-    db_host = conf.require_config(f"{db_prefix}_HOST")
-    db_port = conf.require_config(f"{db_prefix}_PORT")
-    db_database = conf.require_config(f"{db_prefix}_NAME")
-    db_user = conf.require_config(f"{db_prefix}_USER")
-    db_password = conf.require_config(f"{db_prefix}_PASSWORD")
-    return f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_database}"  # if working with local POSTGRES container then perhaps removing '?sslmode=require' is needed
-
-
 config.set_main_option("sqlalchemy.url", get_database_url())
-
-
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
